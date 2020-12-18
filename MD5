@@ -1,0 +1,17 @@
+e91ee6d6cf5d2fb8a74da11612c37108 *DESCRIPTION
+161e51cd17f75003338b022a532199b3 *NAMESPACE
+eeda3cdd478d339dc515a1147e7c4307 *NEWS.md
+89eb37641ba0fb93bac003ea129e34dd *R/FKF.SP-Description.R
+89eb37641ba0fb93bac003ea129e34dd *R/Package-Description.R
+2c2dca72d53000ae57a234ebd0e0b8f9 *R/fkf.SP.R
+fb3307fb17cc9c1fdfdca85937da8a5e *README.md
+96772764e30a47f35599a3bbd3b01b50 *build/FKF.SP.pdf
+dd947846305d6198bb8d3320c0fa87d5 *build/vignette.rds
+a7158cc0adcd38d759e7d76a68ae5173 *inst/doc/FKFSP.R
+6fd5dc50effd3a4a706e4b043f7bf52d *inst/doc/FKFSP.Rmd
+bc5e72e40afb12dc151913101d66d455 *inst/doc/FKFSP.html
+b7cf4907da60da0f2d93ac30db98d707 *man/fkf.SP.Rd
+2fa4c7011c2bc0f7449ae151d5cc44ae *src/Makevars
+f866d7de3b5055a6bafdc1dc6337ac3e *src/fkf_SP.c
+d1ee158844a473661b480c5e79b50218 *src/init.c
+6fd5dc50effd3a4a706e4b043f7bf52d *vignettes/FKFSP.Rmd
