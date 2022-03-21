@@ -40,6 +40,7 @@ return(list(a0 = a0, P0 = P0, ct = ct, dt = dt, Zt = Zt, Tt = Tt, GGt = GGt,
             HHt = HHt))}
 
 ## -----------------------------------------------------------------------------
+
 # The objective function passed to 'optim'
 objective <- function(theta, yt, SP) {
 param <- arma21ss(theta["ar1"], theta["ar2"], theta["ma1"], theta["sigma"])
@@ -90,6 +91,21 @@ print(c(FKF.SP = FKF.SP_estimation$counts[1], FKF = FKF_estimation$counts[1]))
 print(c(FKF.SP = FKF.SP_runtime, FKF = FKF_runtime))
 
 ## -----------------------------------------------------------------------------
+FKF.SP_parameters <- arma21ss(FKF.SP_estimation$par[1], FKF.SP_estimation$par[2], FKF.SP_estimation$par[3], FKF.SP_estimation$par[4])
+FKF_parameters <- arma21ss(FKF_estimation$par[1], FKF_estimation$par[2], FKF_estimation$par[3], FKF_estimation$par[4])
+
+FKF_output <- FKF::fkf(FKF_parameters$a0, FKF_parameters$P0, FKF_parameters$dt, FKF_parameters$ct, FKF_parameters$Tt, FKF_parameters$Zt, FKF_parameters$HHt, FKF_parameters$GGt, rbind(a))
+
+FKF.SP_output <- FKF.SP::fkf.SP(FKF_parameters$a0, FKF_parameters$P0, FKF_parameters$dt, FKF_parameters$ct, FKF_parameters$Tt, FKF_parameters$Zt, FKF_parameters$HHt, FKF_parameters$GGt, rbind(a), verbose = TRUE)
+
+print(head(t(rbind(
+# FKF
+FKF_output$att[1,],
+# FKF.SP
+FKF.SP_output$att[1,]
+))))
+
+## -----------------------------------------------------------------------------
 ## Transition equation:
 ## alpha[t+1] = alpha[t] + eta[t], eta[t] ~ N(0, HHt)
 ## Measurement equation:
@@ -106,6 +122,7 @@ dt <- ct <- matrix(0)
 Zt <- Tt <- matrix(1)
 a0 <- y_incomplete[1]   # Estimation of the first year flow
 P0 <- matrix(100)     # Variance of 'a0'
+# 'P0' here is classified as a 'diffuse' initial state. A large estimate of the variance of the initial state variable is used when no prior information regarding state variance is known. This is again a common approach when performing Kalman filtering, and has been empirically shown to have little influence on estimated parameters, as future estimations are transient to the initial state. This is highly dependent, however, on the observations filtered, and caution should be advised.
 
 ## Parameter estimation - maximum likelihood estimation:
 Nile_MLE <- function(yt, SP){
@@ -220,10 +237,17 @@ run_time_FKF.SP = Sys.time() - start
 
 print(c(fkf.SP = run_time_FKF.SP, fkf = run_time_FKF))
 
+
+## -----------------------------------------------------------------------------
+
 ## Filter tree ring data with estimated parameters using 'fkf':
 fkf.obj <- fkf(a0, P0, dt, ct, Tt, Zt, HHt = array(fit_fkf$par[1],c(1,1,1)),
                GGt = array(fit_fkf$par[2],c(1,1,1)), yt = rbind(y))
+## Filter tree ring data with estimated parameters using 'fkf.SP':
+fkf.SP.obj <- fkf.SP(a0, P0, dt, ct, Tt, Zt, HHt = array(fit_fkf$par[1],c(1,1,1)),
+               GGt = matrix(fit_fkf$par[2]), yt = rbind(y), verbose = TRUE)
 
+print(head(cbind(FKF = fkf.obj$Ptt[1,,], FKF.SP = fkf.SP.obj$Ptt[1,,])))
 
 ## -----------------------------------------------------------------------------
 
@@ -292,4 +316,23 @@ print(c(FKF.SP = fkf.SP.gbm$counts[1], FKF = fkf.gbm$counts[1]))
 
 ## -----------------------------------------------------------------------------
 print(c(FKF.SP = fkf.SP_runtime, FKF = fkf_runtime))
+
+## -----------------------------------------------------------------------------
+ct <- fkf.SP.gbm$par['alpha_rn'] * TTM
+dt <- (fkf.SP.gbm$par['alpha'] - 0.5 * fkf.SP.gbm$par['sigma']^2) * delta_t
+Zt <- matrix(1, nrow(yt))
+HHt <- matrix(fkf.SP.gbm$par['sigma']^2 * delta_t)
+Tt <- matrix(1)
+
+GGt.SP <- rep(fkf.SP.gbm$par['ME_1']^2, nrow(yt))
+GGt <- diag(fkf.SP.gbm$par['ME_1']^2, nrow(yt))
+
+GBM_fkf <- fkf(a0 = a0, P0 = P0, dt = dt, ct = ct, Tt = Tt, Zt = Zt, HHt = HHt, GGt = GGt, yt = yt)
+GBM_fkf.SP <- fkf.SP(a0 = a0, P0 = P0, dt = dt, ct = ct, Tt = Tt, Zt = Zt, HHt = HHt, GGt = GGt.SP, yt = yt, verbose = TRUE)
+
+Filtered_values <- t(rbind(FKF = GBM_fkf$att, FKF.SP = GBM_fkf.SP$att))
+colnames(Filtered_values) <- c("FKF", "FKF.SP")
+
+print(head(Filtered_values))
+
 
