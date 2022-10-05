@@ -5,7 +5,7 @@ knitr::opts_chunk$set(
 )
 
 ## ----setup--------------------------------------------------------------------
-##The packages 'FKF', 'stats' and 'NFCP' are required for this Vignette:
+##The packages 'FKF', 'KFAS','stats' and 'NFCP' are required for this Vignette:
 library(FKF.SP)
 library(FKF)
 library(stats)
@@ -48,7 +48,7 @@ param <- arma21ss(theta["ar1"], theta["ar2"], theta["ma1"], theta["sigma"])
 if(SP){
  ans <- - fkf.SP(a0 = param$a0, P0 = param$P0, dt = param$dt, ct = param$ct, 
                Tt = param$Tt, Zt = param$Zt, HHt = param$HHt, GGt = param$GGt, 
-               yt = yt)
+               yt = yt, verbose = TRUE)$logLik
  }
 # Kalman filtering through the 'fkf' function:
  else{
@@ -133,9 +133,9 @@ set.seed(1)
 if(SP){
   return(optim(c(HHt = HHt, GGt = GGt),
         fn = function(par, ...)
-             -fkf.SP(HHt = matrix(par[1]), GGt = matrix(par[2]), ...),
+             -fkf.SP(HHt = matrix(par[1]), GGt = matrix(par[2]), ...)$logLik,
              yt = rbind(yt), a0 = a0, P0 = P0, dt = dt, ct = ct,
-             Zt = Zt, Tt = Tt))
+             Zt = Zt, Tt = Tt, verbose = TRUE))
 } else {
 # Kalman filtering through the 'fkf' function:
   return(optim(c(HHt = HHt, GGt = GGt),
@@ -186,7 +186,7 @@ FKF_runtime <- Sys.time() - start
 set.seed(1)
 start = Sys.time()
 for(i in 1:1e4) fkf.SP(a0, P0, dt, ct, Tt, Zt, HHt = matrix(fkf.SP_MLE_complete$par[1]),
-                       GGt = matrix(fkf.SP_MLE_complete$par[2]), yt = rbind(y_complete))
+                       GGt = matrix(fkf.SP_MLE_complete$par[2]), yt = rbind(y_complete), verbose = TRUE)
 fkf.SP_runtime <- Sys.time() - start
 
 print(c(FKF.SP = fkf.SP_runtime, FKF = FKF_runtime))
@@ -230,7 +230,7 @@ set.seed(1)
 for(i in 1:10)  fit_fkf.SP <- optim(c(HHt = var(y, na.rm = TRUE) * .5,
                         GGt = var(y, na.rm = TRUE) * .5),
                       fn = function(par, ...)
-                        -fkf.SP(HHt = array(par[1],c(1,1,1)), GGt = matrix(par[2]), ...),
+                        -fkf.SP(HHt = array(par[1],c(1,1,1)), GGt = matrix(par[2]),verbose = TRUE, ...)$logLik,
                       yt = rbind(y), a0 = a0, P0 = P0, dt = dt, ct = ct,
                       Zt = Zt, Tt = Tt)
 run_time_FKF.SP = Sys.time() - start
@@ -276,13 +276,14 @@ GGt = rep(theta["ME_1"]^2, nrow(yt))
 GGt = diag(theta["ME_1"]^2, nrow(yt))
 }
 
-##'fkf.SP' returns only the log-likelihood numeric value, whilst 'fkf' returns a list of filtered values
+##'fkf.SP' returns only the log-likelihood numeric value when Verbose = FALSE, whilst 'fkf' returns a list of filtered values
 logLik = ifelse(SP,
-                - fkf.SP(a0 = a0, P0 = P0, dt = dt, ct = ct, Tt = Tt, Zt = Zt, HHt = HHt, GGt = GGt, yt = yt),
+                - fkf.SP(a0 = a0, P0 = P0, dt = dt, ct = ct, Tt = Tt, Zt = Zt, HHt = HHt, GGt = GGt, yt = yt, verbose = TRUE)$logLik,
                 - fkf(a0 = a0, P0 = P0, dt = dt, ct = ct, Tt = Tt, Zt = Zt, HHt = HHt, GGt = GGt, yt = yt)$logLik
                 )
 return(logLik)
 }
+
 
 
 ## -----------------------------------------------------------------------------
@@ -334,5 +335,68 @@ Filtered_values <- t(rbind(FKF = GBM_fkf$att, FKF.SP = GBM_fkf.SP$att))
 colnames(Filtered_values) <- c("FKF", "FKF.SP")
 
 print(head(Filtered_values))
+
+
+## -----------------------------------------------------------------------------
+#This test compares processing speeds of function calls using a set number of iterations.
+#Please run the complete chunk for a fair comparison:
+
+## Transition equation:
+## alpha[t+1] = alpha[t] + eta[t], eta[t] ~ N(0, HHt)
+## Measurement equation:
+## y[t] = alpha[t] + eps[t], eps[t] ~  N(0, GGt)
+
+##Nile Data:
+yt <- Nile
+
+## Set constant parameters:
+dt <- ct <- matrix(0)
+Zt <- Tt <- matrix(1)
+a0 <- yt[1]             # Estimation of the first year flow
+P0 <- matrix(100)       # Variance of 'a0'
+
+
+# Parameter estimation - maximum likelihood estimation:
+# Unknown parameters initial estimates:
+GGt <- HHt <- var(yt, na.rm = TRUE) * .5
+HHt = matrix(HHt)
+GGt = matrix(GGt)
+yt = rbind(yt)
+
+# Run each function call 10,000 times to minimize variance:
+N_iterations <- 1e4
+
+# FKF:
+set.seed(1)
+FKF_start_time <- Sys.time()
+for(i in 1:N_iterations){
+  FKF_Nile_filtered <- fkf(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
+                 Zt = Zt, Tt = Tt, yt = rbind(yt))
+  
+  FKF_Nile_smoothed <- fks(FKF_Nile_filtered)
+}
+FKF_runtime <- difftime(Sys.time(), FKF_start_time, units = "secs")
+
+# FKF.SP:
+set.seed(1)
+FKF_SP_start_time <- Sys.time()
+for(i in 1:N_iterations){
+  FKF_SP_Nile_filtered <- fkf.SP(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
+                 Zt = Zt, Tt = Tt, yt = rbind(yt), verbose = TRUE)
+  
+  FKF_SP_Nile_smoothed <- fks.SP(FKF_SP_Nile_filtered)
+}
+FKF_SP_runtime <- difftime(Sys.time(), FKF_SP_start_time, units = "secs")
+
+
+print(c(fkf.SP = FKF_SP_runtime, fkf = FKF_runtime))
+
+
+## -----------------------------------------------------------------------------
+
+Smoothed_values <- t(rbind(FKF = FKF_SP_Nile_smoothed$ahatt, FKF.SP = FKF_Nile_smoothed$ahatt))
+colnames(Smoothed_values) <- c("FKF", "FKF.SP")
+
+print(head(Smoothed_values))
 
 
