@@ -366,36 +366,51 @@ yt = rbind(yt)
 # Run each function call 10,000 times to minimize variance:
 N_iterations <- 1e4
 
+## # Kalman filtering, and then smoothing, through each approach:
+
 # FKF:
 set.seed(1)
 FKF_start_time <- Sys.time()
 for(i in 1:N_iterations){
+  # Filtering:
   FKF_Nile_filtered <- fkf(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
                  Zt = Zt, Tt = Tt, yt = rbind(yt))
-  
+  # Smoothing:
   FKF_Nile_smoothed <- fks(FKF_Nile_filtered)
 }
 FKF_runtime <- difftime(Sys.time(), FKF_start_time, units = "secs")
 
-# FKF.SP:
+
+# FKF.SP - Approach 1:
+# Filtering, and then smoothing, using 'smoothing = TRUE':
 set.seed(1)
-FKF_SP_start_time <- Sys.time()
+FKF.SP_1_start_time <- Sys.time()
 for(i in 1:N_iterations){
-  FKF_SP_Nile_filtered <- fkf.SP(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
-                 Zt = Zt, Tt = Tt, yt = rbind(yt), verbose = TRUE)
-  
-  FKF_SP_Nile_smoothed <- fks.SP(FKF_SP_Nile_filtered)
+  FKF.SP_1_Nile_filtered_smoothed <- fkf.SP(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
+                 Zt = Zt, Tt = Tt, yt = rbind(yt), smoothing = TRUE)
 }
-FKF_SP_runtime <- difftime(Sys.time(), FKF_SP_start_time, units = "secs")
+FKF.SP_1_runtime <- difftime(Sys.time(), FKF.SP_1_start_time, units = "secs")
 
+# FKF.SP - Approach 2:
+# Filtering a model using 'verbose = TRUE', and then smoothing using the returned object:
+set.seed(1)
+FKF.SP_2_start_time <- Sys.time()
+for(i in 1:N_iterations){
+  # Filtering:
+  FKF.SP_Nile_filtered <- fkf.SP(HHt = matrix(HHt), GGt = matrix(GGt), a0 = a0, P0 = P0, dt = dt, ct = ct,
+                 Zt = Zt, Tt = Tt, yt = rbind(yt), verbose = TRUE)
+  # Smoothing:
+  FKF.SP_2_Nile_smoothed <- fks.SP(FKF.SP_Nile_filtered)
+}
+FKF.SP_2_runtime <- difftime(Sys.time(), FKF.SP_2_start_time, units = "secs")
 
-print(c(fkf.SP = FKF_SP_runtime, fkf = FKF_runtime))
+print(c("FKF.SP (Approach 1)" = FKF.SP_1_runtime, "FKF.SP (Approach 2)" = FKF.SP_2_runtime, "FKF"= FKF_runtime))
 
 
 ## -----------------------------------------------------------------------------
 
-Smoothed_values <- t(rbind(FKF = FKF_SP_Nile_smoothed$ahatt, FKF.SP = FKF_Nile_smoothed$ahatt))
-colnames(Smoothed_values) <- c("FKF", "FKF.SP")
+Smoothed_values <- t(rbind(FKF.SP_1_Nile_filtered_smoothed$ahatt, FKF.SP_2_Nile_smoothed$ahatt, FKF_Nile_smoothed$ahatt))
+colnames(Smoothed_values) <- c("FKF.SP (Approach 1)","FKF.SP (Approach 2)", "FKF")
 
 print(head(Smoothed_values))
 

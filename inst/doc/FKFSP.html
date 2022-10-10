@@ -473,7 +473,7 @@ time:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">FKF.SP =</span> FKF.SP_runtime, <span class="at">FKF =</span> FKF_runtime))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   FKF.SP      FKF </span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.130258 1.438207</span></span></code></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.111476 1.420871</span></span></code></pre></div>
 <p>Finally, under a variety of purposes, such as when parameters of the
 system have been estimated, it can be valuable to evaluate filtered
 state variables.</p>
@@ -649,7 +649,7 @@ observed.</p>
 <span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">FKF.SP =</span> fkf.SP_runtime, <span class="at">FKF =</span> FKF_runtime))</span>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    FKF.SP       FKF </span></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.6404762 0.8460939</span></span></code></pre></div>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.6129189 0.8680301</span></span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time.</p>
 </div>
 </div>
@@ -700,7 +700,7 @@ observed.</p>
 <span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">fkf.SP =</span> run_time_FKF.SP, <span class="at">fkf =</span> run_time_FKF))</span>
 <span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
 <span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   fkf.SP      fkf </span></span>
-<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.544969 1.986153</span></span></code></pre></div>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1.485072 1.950134</span></span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time.</p>
 <p>Additionally - Identical filtered values are returned:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a></span>
@@ -805,7 +805,7 @@ decreased processing time:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">FKF.SP =</span> fkf.SP_runtime, <span class="at">FKF =</span> fkf_runtime))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    FKF.SP       FKF </span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.2127259 2.0443099</span></span></code></pre></div>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.2022438 1.9982710</span></span></code></pre></div>
 <p>Sequential processing is a significantly faster Kalman filtering
 approach for this particular example due to the large number of
 observations at each time point, the assumption that the variance of the
@@ -844,10 +844,14 @@ functions:</p>
 <p>Kalman smoothing is an algorithm that allows one to refine estimates
 of previous states, conditional on the filtered observations. This is
 useful when performing expectation maximization (EM) approaches to
-parameter estimation. The ‘FKF.SP’ package features the function
-‘fks.SP’ to perform this through the sequential processing approach. The
-solution to Kalman smoothing through sequential processing is available
-in the documentation of the ‘fks.SP’ function.</p>
+parameter estimation. The ‘FKF.SP’ package allows for Kalman smoothing
+in two ways. The first way is to simply set the argument “smoothing =
+TRUE” when performing Kalman filtering through the ‘fkf.SP’ function.
+Alternatively, if a state space model has been filtered with the
+argument ‘verbose = TRUE’, then the ‘fks.SP’ function may be used on the
+returned object. The solution to Kalman smoothing through sequential
+processing is available in the documentation of the ‘fks.SP’
+function.</p>
 <p>The ‘fks.SP’ function takes an object of class ‘fkf.SP’, which is
 returned whenever the ‘fkf.SP’ function is called with the argument
 ‘verbose = TRUE’.</p>
@@ -882,49 +886,67 @@ packages.</p>
 <span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Run each function call 10,000 times to minimize variance:</span></span>
 <span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>N_iterations <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
 <span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="co"># FKF:</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>FKF_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_iterations){</span>
-<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  FKF_Nile_filtered <span class="ot">&lt;-</span> <span class="fu">fkf</span>(<span class="at">HHt =</span> <span class="fu">matrix</span>(HHt), <span class="at">GGt =</span> <span class="fu">matrix</span>(GGt), <span class="at">a0 =</span> a0, <span class="at">P0 =</span> P0, <span class="at">dt =</span> dt, <span class="at">ct =</span> ct,</span>
-<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Zt =</span> Zt, <span class="at">Tt =</span> Tt, <span class="at">yt =</span> <span class="fu">rbind</span>(yt))</span>
-<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  FKF_Nile_smoothed <span class="ot">&lt;-</span> <span class="fu">fks</span>(FKF_Nile_filtered)</span>
-<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>FKF_runtime <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), FKF_start_time, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a><span class="co"># FKF.SP:</span></span>
-<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>FKF_SP_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
-<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_iterations){</span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>  FKF_SP_Nile_filtered <span class="ot">&lt;-</span> <span class="fu">fkf.SP</span>(<span class="at">HHt =</span> <span class="fu">matrix</span>(HHt), <span class="at">GGt =</span> <span class="fu">matrix</span>(GGt), <span class="at">a0 =</span> a0, <span class="at">P0 =</span> P0, <span class="at">dt =</span> dt, <span class="at">ct =</span> ct,</span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Zt =</span> Zt, <span class="at">Tt =</span> Tt, <span class="at">yt =</span> <span class="fu">rbind</span>(yt), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>  FKF_SP_Nile_smoothed <span class="ot">&lt;-</span> <span class="fu">fks.SP</span>(FKF_SP_Nile_filtered)</span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>FKF_SP_runtime <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), FKF_SP_start_time, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">fkf.SP =</span> FKF_SP_runtime, <span class="at">fkf =</span> FKF_runtime))</span>
-<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
-<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    fkf.SP       fkf </span></span>
-<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.9224451 1.2472060</span></span></code></pre></div>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="do">## # Kalman filtering, and then smoothing, through each approach:</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co"># FKF:</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>FKF_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_iterations){</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filtering:</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  FKF_Nile_filtered <span class="ot">&lt;-</span> <span class="fu">fkf</span>(<span class="at">HHt =</span> <span class="fu">matrix</span>(HHt), <span class="at">GGt =</span> <span class="fu">matrix</span>(GGt), <span class="at">a0 =</span> a0, <span class="at">P0 =</span> P0, <span class="at">dt =</span> dt, <span class="at">ct =</span> ct,</span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Zt =</span> Zt, <span class="at">Tt =</span> Tt, <span class="at">yt =</span> <span class="fu">rbind</span>(yt))</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Smoothing:</span></span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  FKF_Nile_smoothed <span class="ot">&lt;-</span> <span class="fu">fks</span>(FKF_Nile_filtered)</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>FKF_runtime <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), FKF_start_time, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a><span class="co"># FKF.SP - Approach 1:</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtering, and then smoothing, using &#39;smoothing = TRUE&#39;:</span></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>FKF.SP_1_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_iterations){</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>  FKF.SP_1_Nile_filtered_smoothed <span class="ot">&lt;-</span> <span class="fu">fkf.SP</span>(<span class="at">HHt =</span> <span class="fu">matrix</span>(HHt), <span class="at">GGt =</span> <span class="fu">matrix</span>(GGt), <span class="at">a0 =</span> a0, <span class="at">P0 =</span> P0, <span class="at">dt =</span> dt, <span class="at">ct =</span> ct,</span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Zt =</span> Zt, <span class="at">Tt =</span> Tt, <span class="at">yt =</span> <span class="fu">rbind</span>(yt), <span class="at">smoothing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>FKF.SP_1_runtime <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), FKF.SP_1_start_time, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a><span class="co"># FKF.SP - Approach 2:</span></span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtering a model using &#39;verbose = TRUE&#39;, and then smoothing using the returned object:</span></span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>FKF.SP_2_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_iterations){</span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filtering:</span></span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>  FKF.SP_Nile_filtered <span class="ot">&lt;-</span> <span class="fu">fkf.SP</span>(<span class="at">HHt =</span> <span class="fu">matrix</span>(HHt), <span class="at">GGt =</span> <span class="fu">matrix</span>(GGt), <span class="at">a0 =</span> a0, <span class="at">P0 =</span> P0, <span class="at">dt =</span> dt, <span class="at">ct =</span> ct,</span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Zt =</span> Zt, <span class="at">Tt =</span> Tt, <span class="at">yt =</span> <span class="fu">rbind</span>(yt), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Smoothing:</span></span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>  FKF.SP_2_Nile_smoothed <span class="ot">&lt;-</span> <span class="fu">fks.SP</span>(FKF.SP_Nile_filtered)</span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>FKF.SP_2_runtime <span class="ot">&lt;-</span> <span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), FKF.SP_2_start_time, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="st">&quot;FKF.SP (Approach 1)&quot;</span> <span class="ot">=</span> FKF.SP_1_runtime, <span class="st">&quot;FKF.SP (Approach 2)&quot;</span> <span class="ot">=</span> FKF.SP_2_runtime, <span class="st">&quot;FKF&quot;</span><span class="ot">=</span> FKF_runtime))</span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Time differences in secs</span></span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; FKF.SP (Approach 1) FKF.SP (Approach 2)                 FKF </span></span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           0.8077219           0.9067340           1.2144680</span></span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time when
-both filtering and smoothing.</p>
-<p>Finally, the smoothed values returned by both functions are
+both filtering and smoothing. Approach 1 of Kalman filtering, and then
+smoothing, through the FKF.SP package results in both the Kalman filter
+and Kalman smoother recursions being run in the same compiled C function
+call.</p>
+<p>Finally, the smoothed values returned by the three functions are
 identical:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>Smoothed_values <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">rbind</span>(<span class="at">FKF =</span> FKF_SP_Nile_smoothed<span class="sc">$</span>ahatt, <span class="at">FKF.SP =</span> FKF_Nile_smoothed<span class="sc">$</span>ahatt))</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Smoothed_values) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;FKF&quot;</span>, <span class="st">&quot;FKF.SP&quot;</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>Smoothed_values <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">rbind</span>(FKF.SP_1_Nile_filtered_smoothed<span class="sc">$</span>ahatt, FKF.SP_2_Nile_smoothed<span class="sc">$</span>ahatt, FKF_Nile_smoothed<span class="sc">$</span>ahatt))</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(Smoothed_values) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;FKF.SP (Approach 1)&quot;</span>,<span class="st">&quot;FKF.SP (Approach 2)&quot;</span>, <span class="st">&quot;FKF&quot;</span>)</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(Smoothed_values))</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           FKF   FKF.SP</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 1119.985 1119.985</span></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 1117.839 1117.839</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,] 1073.533 1073.533</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,] 1139.758 1139.758</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5,] 1135.743 1135.743</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6,] 1107.470 1107.470</span></span></code></pre></div>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      FKF.SP (Approach 1) FKF.SP (Approach 2)      FKF</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]            1119.985            1119.985 1119.985</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]            1117.839            1117.839 1117.839</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3,]            1073.533            1073.533 1073.533</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4,]            1139.758            1139.758 1139.758</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5,]            1135.743            1135.743 1135.743</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [6,]            1107.470            1107.470 1107.470</span></span></code></pre></div>
 </div>
 
 
