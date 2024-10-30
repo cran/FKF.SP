@@ -1,6 +1,6 @@
 Package: FKF.SP
 Title: Fast Kalman Filtering Through Sequential Processing
-Version: 0.3.1
+Version: 0.3.3
 Authors@R: c(person("Thomas", "Aspinall", email = "tomaspinall2512@gmail.com", 
          role = c("aut", "cre"),
          comment = c(ORCID = "0000-0002-6968-1989")),
@@ -27,7 +27,7 @@ Authors@R: c(person("Thomas", "Aspinall", email = "tomaspinall2512@gmail.com",
 Description: Fast and flexible Kalman filtering and smoothing implementation utilizing sequential processing, designed for efficient parameter estimation through maximum likelihood estimation. Sequential processing is a univariate treatment of a multivariate series of observations and can benefit from computational efficiency over traditional Kalman filtering when independence is assumed in the variance of the disturbances of the measurement equation. Sequential processing is described in the textbook of Durbin and Koopman (2001, ISBN:978-0-19-964117-8). 'FKF.SP' was built upon the existing 'FKF' package and is, in general, a faster Kalman filter/smoother.
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 RdMacros: mathjaxr
 Imports: mathjaxr,
 Suggests: knitr, rmarkdown, stats, FKF, NFCP
@@ -35,7 +35,7 @@ VignetteBuilder: knitr
 URL: https://github.com/TomAspinall/FKF.SP
 BugReports: https://github.com/TomAspinall/FKF.SP/issues
 NeedsCompilation: yes
-Packaged: 2022-10-09 08:01:10 UTC; Thomas Aspinall
+Packaged: 2024-10-30 10:39:45 UTC; Thomas Aspinall
 Author: Thomas Aspinall [aut, cre] (<https://orcid.org/0000-0002-6968-1989>),
   Adrian Gepp [aut] (<https://orcid.org/0000-0003-1666-5501>),
   Geoff Harris [aut] (<https://orcid.org/0000-0003-4284-8619>),
@@ -48,4 +48,4 @@ Author: Thomas Aspinall [aut, cre] (<https://orcid.org/0000-0002-6968-1989>),
   Paul Smith [ctb] (<https://orcid.org/0000-0002-0034-3412>)
 Maintainer: Thomas Aspinall <tomaspinall2512@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-10-10 08:10:06 UTC
+Date/Publication: 2024-10-30 11:10:02 UTC
