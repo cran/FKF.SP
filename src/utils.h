@@ -5,14 +5,18 @@
 #include <R_ext/BLAS.h>
 #include <R_ext/Lapack.h>
 
-#define M_PI 3.14159265358979323846
+#ifndef M_PI
+#define M_PI 3.141592653589793238462643383280
+#endif
+
+#ifndef USE_FC_LEN_T
 #define USE_FC_LEN_T
+#endif
 
 #ifndef FCONE
 #define FCONE
 #endif
 
-// #define DEBUG_PRINT
 // #define DEBUGME
 
 void print_array(double *data, int i, int j, const char *lab);

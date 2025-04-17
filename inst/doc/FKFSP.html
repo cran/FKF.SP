@@ -211,7 +211,7 @@ FKF.SP_runtime &lt;-<span class="st"> </span><span class="kw">Sys.time</span>() 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">c</span>(<span class="dt">FKF.SP =</span> FKF.SP_runtime, <span class="dt">FKF =</span> FKF_runtime))
 <span class="co">#&gt; Time differences in secs</span>
 <span class="co">#&gt;   FKF.SP      FKF </span>
-<span class="co">#&gt; 1.019001 1.403578</span></code></pre></div>
+<span class="co">#&gt; 1.228629 1.742656</span></code></pre></div>
 <p>Finally, under a variety of purposes, such as when parameters of the system have been estimated, it can be valuable to evaluate filtered state variables.</p>
 <p>The filtered state variables and their filtered covariances are also identical between FKF and FKF.SP:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">FKF.SP_parameters &lt;-<span class="st"> </span><span class="kw">arma21ss</span>(FKF.SP_estimation<span class="op">$</span>par[<span class="dv">1</span>], FKF.SP_estimation<span class="op">$</span>par[<span class="dv">2</span>], FKF.SP_estimation<span class="op">$</span>par[<span class="dv">3</span>], FKF.SP_estimation<span class="op">$</span>par[<span class="dv">4</span>])
@@ -361,8 +361,8 @@ fkf.SP_runtime &lt;-<span class="st"> </span><span class="kw">Sys.time</span>() 
 
 <span class="kw">print</span>(<span class="kw">c</span>(<span class="dt">FKF.SP =</span> fkf.SP_runtime, <span class="dt">FKF =</span> FKF_runtime))
 <span class="co">#&gt; Time differences in secs</span>
-<span class="co">#&gt;    FKF.SP       FKF </span>
-<span class="co">#&gt; 0.5973079 0.8233068</span></code></pre></div>
+<span class="co">#&gt;   FKF.SP      FKF </span>
+<span class="co">#&gt; 0.715287 1.001773</span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time.</p>
 </div>
 </div>
@@ -413,7 +413,7 @@ run_time_FKF.SP =<span class="st"> </span><span class="kw">Sys.time</span>() <sp
 <span class="kw">print</span>(<span class="kw">c</span>(<span class="dt">fkf.SP =</span> run_time_FKF.SP, <span class="dt">fkf =</span> run_time_FKF))
 <span class="co">#&gt; Time differences in secs</span>
 <span class="co">#&gt;   fkf.SP      fkf </span>
-<span class="co">#&gt; 1.560650 1.910009</span></code></pre></div>
+<span class="co">#&gt; 1.782115 2.263893</span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time.</p>
 <p>Additionally - Identical filtered values are returned:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
@@ -505,8 +505,8 @@ fkf_runtime &lt;-<span class="st"> </span><span class="kw">Sys.time</span>() <sp
 <p>A sequential processing approach, however, has significantly decreased processing time:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">c</span>(<span class="dt">FKF.SP =</span> fkf.SP_runtime, <span class="dt">FKF =</span> fkf_runtime))
 <span class="co">#&gt; Time differences in secs</span>
-<span class="co">#&gt;    FKF.SP       FKF </span>
-<span class="co">#&gt; 0.2015769 3.7294381</span></code></pre></div>
+<span class="co">#&gt;   FKF.SP      FKF </span>
+<span class="co">#&gt; 0.235621 4.474179</span></code></pre></div>
 <p>Sequential processing is a significantly faster Kalman filtering approach for this particular example due to the large number of observations at each time point, the assumption that the variance of the disturbances are independent, the large number of NA's that are observed as contracts expired or are made available and the dimensionality of argument 'GGt' being significantly reduced.</p>
 <p>Finally, the filtered values, which in this case correspond to the estimated log of the spot price, are identical through both functions:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ct &lt;-<span class="st"> </span>fkf.SP.gbm<span class="op">$</span>par[<span class="st">'alpha_rn'</span>] <span class="op">*</span><span class="st"> </span>TTM
@@ -607,7 +607,7 @@ FKF.SP_2_runtime &lt;-<span class="st"> </span><span class="kw">difftime</span>(
 <span class="kw">print</span>(<span class="kw">c</span>(<span class="st">&quot;FKF.SP (Approach 1)&quot;</span> =<span class="st"> </span>FKF.SP_1_runtime, <span class="st">&quot;FKF.SP (Approach 2)&quot;</span> =<span class="st"> </span>FKF.SP_2_runtime, <span class="st">&quot;FKF&quot;</span>=<span class="st"> </span>FKF_runtime))
 <span class="co">#&gt; Time differences in secs</span>
 <span class="co">#&gt; FKF.SP (Approach 1) FKF.SP (Approach 2)                 FKF </span>
-<span class="co">#&gt;           0.9048891           0.8839259           1.2231350</span></code></pre></div>
+<span class="co">#&gt;            0.912024            1.144119            1.567650</span></code></pre></div>
 <p>Utilizing Sequential Processing has decreased processing time when both filtering and smoothing. Approach 1 of Kalman filtering, and then smoothing, through the FKF.SP package results in both the Kalman filter and Kalman smoother recursions being run in the same compiled C function call.</p>
 <p>Finally, the smoothed values returned by the three functions are identical:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
